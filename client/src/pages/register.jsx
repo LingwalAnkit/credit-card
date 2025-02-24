@@ -22,6 +22,7 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault();
     const response = await registerUser(formData);
 
@@ -32,6 +33,7 @@ const Register = () => {
     } else {
       alert(response.message);
     }
+    setLoading(false)
   };
 
   const handleOtpSubmit = async () => {
@@ -87,7 +89,13 @@ const Register = () => {
               onChange={handleChange}
               placeholder="********"
             />
-            <Button text="Register" type="submit" />
+            <Button
+              type="submit"
+              text="Register"
+              loading={loading}
+              className="w-full px-4 py-2 bg-black text-white shadow-xs hover:bg-gray-400 hover:text-black"
+            >
+            </Button>
           </form>
         ) : (
           <div className="space-y-4">
@@ -99,10 +107,13 @@ const Register = () => {
               placeholder="123456"
             />
             <Button
-              text={loading ? "Verifying..." : "Verify OTP"}
+              type="submit"
+              text="Verify-OTP"
               onClick={handleOtpSubmit}
-              disabled={loading}
-            />
+              loading={loading}
+              className="w-full px-4 py-2 shadow-xs hover:bg-gray-400 hover:text-black"
+            >
+            </Button>
           </div>
         )}
 

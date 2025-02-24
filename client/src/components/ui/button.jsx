@@ -1,27 +1,57 @@
 import PropTypes from "prop-types";
 
-export function Button({ text, loading, onClick, className, ...props }) {
+export function Button({ 
+  children, 
+  text, 
+  onClick, 
+  type = "button", 
+  loading, 
+  disabled, 
+  className = "", 
+  icon
+}) {
+  // Determine content based on children, text, and icon
+  const renderContent = () => {
+    if (loading) return "Processing...";
+    
+    // If children exist, use them
+    if (children) return children;
+    
+    // If an icon is provided with text
+    if (icon && text) {
+      return (
+        <div className="flex items-center gap-2">
+          {icon}
+          <span>{text}</span>
+        </div>
+      );
+    }
+    
+    // Default to text only
+    return text;
+  };
+
   return (
     <button
-      className={`w-full py-2 border border-black bg-black text-white hover:bg-white hover:text-black transition disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center ${className}`}
-      disabled={loading}
+      type={type}
       onClick={onClick}
-      {...props}
+      disabled={loading || disabled}
+      className={` ${
+        loading || disabled ? "bg-gray-400 cursor-not-allowed" : ""
+      } ${className}`}
     >
-      {text}
+      {renderContent()}
     </button>
   );
 }
 
 Button.propTypes = {
-  text: PropTypes.string.isRequired,
-  loading: PropTypes.bool,
+  children: PropTypes.node,
+  text: PropTypes.string,
   onClick: PropTypes.func,
-  className: PropTypes.string
-};
-
-Button.defaultProps = {
-  loading: false,
-  onClick: () => {},
-  className: ""
+  type: PropTypes.string,
+  loading: PropTypes.bool,
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
+  icon: PropTypes.node
 };

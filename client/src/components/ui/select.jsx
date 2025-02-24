@@ -1,28 +1,38 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
 import PropTypes from "prop-types";
+import { ChevronDown } from "lucide-react";
 
 const Dropdown = ({ options, selected, setSelected }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="relative w-48">
+      {/* Selected Option (Trigger) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-2 flex justify-between items-center border rounded-lg bg-black text-white shadow-lg"
+        className="flex justify-between items-center w-full px-3 py-2 border bg-white text-black shadow-lg"
       >
-        {selected ? selected.charAt(0).toUpperCase() + selected.slice(1) : "Select Type"}
-        <ChevronDown size={18} className={`transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        {selected.charAt(0).toUpperCase() + selected.slice(1)}
+
+        {/* Animated Chevron Icon */}
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <ChevronDown />
+        </motion.div>
       </button>
+
+      {/* Dropdown Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.ul
-            initial={{ opacity: 0, y: -5 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute left-0 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-xl overflow-hidden"
+            className="absolute left-0 w-full mt-2 bg-white border border-black shadow-lg"
           >
             {options.map((option) => (
               <li
@@ -31,7 +41,7 @@ const Dropdown = ({ options, selected, setSelected }) => {
                   setSelected(option);
                   setIsOpen(false);
                 }}
-                className="px-4 py-2 text-black hover:bg-gray-200 cursor-pointer transition-colors"
+                className="px-3 py-2 text-black hover:bg-gray-100 cursor-pointer"
               >
                 {option.charAt(0).toUpperCase() + option.slice(1)}
               </li>
@@ -43,9 +53,8 @@ const Dropdown = ({ options, selected, setSelected }) => {
   );
 };
 
-// PropTypes validation
 Dropdown.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  options: PropTypes.array.isRequired,
   selected: PropTypes.string.isRequired,
   setSelected: PropTypes.func.isRequired,
 };

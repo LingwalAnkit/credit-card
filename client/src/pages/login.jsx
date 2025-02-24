@@ -2,8 +2,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
 import { loginUser } from "../services/authServices";
+import { Button } from "../components/ui/button";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,12 +11,14 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault();
     const response = await loginUser(formData);
 
@@ -27,6 +29,7 @@ const Login = () => {
     } else {
       alert(response.message);
     }
+    setLoading(false)
   };
 
   return (
@@ -57,8 +60,13 @@ const Login = () => {
             onChange={handleChange}
             placeholder="********"
           />
-
-          <Button text="Login" type="submit" />
+          <Button
+            type="submit"
+            text="Login"
+            loading={loading}
+            className="w-full px-4 py-2 bg-black text-white shadow-xs hover:bg-gray-400 hover:text-black"
+          >
+          </Button>
         </form>
 
         <p className="text-sm mt-4 text-center">

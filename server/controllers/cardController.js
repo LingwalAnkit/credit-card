@@ -47,7 +47,7 @@ exports.createCreditCard = async (req, res) => {
 exports.getCreditCards = async (req, res) => {
   try {
     const userId = req.user.id; 
-    const cards = await CreditCard.find({ userId }).select("-cvv"); // Exclude CVV for security
+    const cards = await CreditCard.find({ userId })
     res.json({ cards });
   } catch (error) {
     res

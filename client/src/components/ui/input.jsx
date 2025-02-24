@@ -5,7 +5,7 @@ export function Input({ label, type, name, value, onChange, placeholder }) {
     <div className="flex flex-col space-y-2">
       <label className="text-sm font-medium">{label}</label>
       <input
-        type={type}
+        type={type} 
         name={name}
         value={value} 
         onChange={onChange} 
