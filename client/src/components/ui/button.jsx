@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 
-export function Button({ text, loading, onClick, ...props }) {
+export function Button({ text, loading, onClick, className, ...props }) {
   return (
     <button
-      className="w-full py-2 border border-black bg-black text-white hover:bg-white hover:text-black transition disabled:opacity-50 disabled:cursor-not-allowed"
+      className={`w-full py-2 border border-black bg-black text-white hover:bg-white hover:text-black transition disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center ${className}`}
       disabled={loading}
       onClick={onClick}
       {...props}
@@ -17,9 +17,11 @@ Button.propTypes = {
   text: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   onClick: PropTypes.func,
+  className: PropTypes.string
 };
 
 Button.defaultProps = {
   loading: false,
   onClick: () => {},
+  className: ""
 };

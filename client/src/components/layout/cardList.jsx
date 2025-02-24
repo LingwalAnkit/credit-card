@@ -2,24 +2,34 @@ import { CreditCard } from "lucide-react";
 import PropTypes from "prop-types";
 
 const CardList = ({ cards }) => (
-  <div className="p-4 border rounded-lg">
-    <h2 className="text-lg font-semibold mb-2">Your Cards</h2>
-    <div className="grid gap-2">
+  <div className="p-4">
+    <h2 className="text-3xl font-semibold mb-8">Your Cards</h2>
+    <div className="grid grid-cols-2 gap-4">
       {cards.length > 0 ? (
         cards.map((card) => (
           <div
             key={card._id}
-            className="p-3 border rounded-lg bg-black text-white"
+            className="relative w-[310px] h-[200px] bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-2xl p-4 text-white flex flex-col justify-between"
           >
-            <div className="flex items-center gap-2 mb-2">
-              <CreditCard size={20} />{" "}
-              <span className="capitalize">{card.cardType}</span>
+            {/* Card Header */}
+            <div className="flex justify-between items-center">
+              <span className="uppercase text-lg font-bold">{card.cardType}</span>
+              <CreditCard size={28} className="text-gray-300" />
             </div>
-            <p className="font-mono text-lg">
+
+            {/* Card Number */}
+            <p className="text-xl font-mono tracking-widest">
               {card.cardNumber.match(/.{1,4}/g).join(" ")}
             </p>
-            <p className="text-sm">Expires: {card.expiryDate}</p>
-            <p className="text-sm">CVV: {card.cvv}</p>
+
+            {/* Card Footer */}
+            <div className="flex justify-between items-center text-sm">
+              <span>Expires: {card.expiryDate}</span>
+              <span className="text-gray-400">CVV: ***</span>
+            </div>
+
+            {/* Glossy Overlay */}
+            <div className="absolute inset-0 bg-white opacity-10 rounded-xl pointer-events-none"></div>
           </div>
         ))
       ) : (
@@ -34,11 +44,11 @@ const CardList = ({ cards }) => (
 CardList.propTypes = {
   cards: PropTypes.arrayOf(
     PropTypes.shape({
-      _id: PropTypes.string.isRequired, // Unique identifier for the card
-      cardType: PropTypes.string.isRequired, // Visa, Mastercard, etc.
-      cardNumber: PropTypes.string.isRequired, // Card number as a string
-      expiryDate: PropTypes.string.isRequired, // Expiry date in MM/YY format
-      cvv: PropTypes.string.isRequired, // Card security code
+      _id: PropTypes.string.isRequired,
+      cardType: PropTypes.string.isRequired,
+      cardNumber: PropTypes.string.isRequired,
+      expiryDate: PropTypes.string.isRequired,
+      cvv: PropTypes.string.isRequired,
     })
   ).isRequired,
 };

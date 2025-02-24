@@ -59,7 +59,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white p-6 text-black">
+    <div className="min-h-screen bg-white p-12 text-black">
       <div className="max-w-2xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Credit Card Dashboard</h1>

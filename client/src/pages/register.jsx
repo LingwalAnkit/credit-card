@@ -41,7 +41,7 @@ const Register = () => {
     if (response.token) {
       localStorage.setItem("token", response.token);
       alert("Account Verified & Registered Successfully");
-      navigate("/dashboard");
+      navigate("/");
     } else {
       alert(response.message);
     }
@@ -49,7 +49,13 @@ const Register = () => {
   };
 
   return (
-    <motion.div className="flex min-h-screen items-center justify-center bg-white text-black">
+    <motion.div
+      className="flex min-h-screen items-center justify-center bg-white text-black"
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 50 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="w-full max-w-md p-8 border border-black shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-center">
           {showOtpField ? "Verify OTP" : "Register"}
@@ -92,7 +98,11 @@ const Register = () => {
               onChange={(e) => setOtp(e.target.value)}
               placeholder="123456"
             />
-            <Button text={loading ? "Verifying..." : "Verify OTP"} onClick={handleOtpSubmit} disabled={loading} />
+            <Button
+              text={loading ? "Verifying..." : "Verify OTP"}
+              onClick={handleOtpSubmit}
+              disabled={loading}
+            />
           </div>
         )}
 
