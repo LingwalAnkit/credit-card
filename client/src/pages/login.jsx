@@ -6,6 +6,7 @@ import { loginUser } from "../services/authServices";
 import { Button } from "../components/ui/button";
 import { useSelector } from "react-redux";
 import Navbar from "../components/layout/navbar";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -21,18 +22,27 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    setLoading(true);
     e.preventDefault();
-    const response = await loginUser(formData);
-
-    if (response.token) {
+    setLoading(true);
+    
+    try {
+      const response = await loginUser(formData);
+      // This will only execute if the response was successful
       localStorage.setItem("token", response.token);
-      alert("Login Successful");
-      navigate("/dashboard");
-    } else {
-      alert(response.message);
+      
+      // Make sure toast is visible before navigating
+      toast.success("Login Successful");
+      
+      // Keep loading state true until navigation completes
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 3000);
+      
+    } catch (error) {
+      // This will catch any errors thrown from the loginUser function
+      toast.error(error.message || "Login failed");
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -60,32 +70,41 @@ const Login = () => {
           </h2>
 
           <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
-            <Input
-              label="Email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="johndoe@example.com"
-              className="w-full"
-            />
-            <Input
-              label="Password"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="********"
-              className="w-full"
-            />
+            <div className="flex flex-col space-y-1">
+              <label htmlFor="email">Email</label>
+              <Input
+                id="email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="johndoe@example.com"
+                className="w-full"
+              />
+            </div>
+            
+            <div className="flex flex-col space-y-1">
+              <label htmlFor="password">Password</label>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="********"
+                className="w-full"
+              />
+            </div>
+            
             <Button
               type="submit"
-              text="Login"
-              loading={loading}
+              disabled={loading}
               className={`w-full px-4 py-3 sm:py-2 ${
                 darkMode ? "bg-white text-black" : "bg-black text-white"
               } shadow-xs hover:bg-gray-400 hover:text-black`}
-            />
+            >
+              {loading ? "Logging in..." : "Login"}
+            </Button>
           </form>
 
           <p className="text-xs sm:text-sm mt-4 text-center">
@@ -99,6 +118,9 @@ const Login = () => {
           </p>
         </div>
       </motion.div>
+
+      {/* Add this to ensure toasts have a container */}
+      <div id="toast-container" />
     </div>
   );
 };

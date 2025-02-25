@@ -8,6 +8,7 @@ import { registerUser, verifyOtp } from "../services/authServices";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import Navbar from "../components/layout/navbar";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -27,32 +28,48 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
-    setLoading(true);
     e.preventDefault();
-    const response = await registerUser(formData);
+    setLoading(true);
+    
+    try {
+      const response = await registerUser(formData);
 
-    if (response.message === "OTP sent for verification") {
-      alert("OTP sent to your email!");
-      setShowOtpField(true);
-      setEmail(formData.email);
-    } else {
-      alert(response.message);
+      if (response.message === "OTP sent for verification") {
+        toast.success("OTP sent to your email!");
+        setShowOtpField(true);
+        setEmail(formData.email);
+      } else {
+        toast.error(response.message || "Registration failed");
+      }
+    } catch (error) {
+      toast.error(error.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleOtpSubmit = async () => {
     setLoading(true);
-    const response = await verifyOtp({ email, otp });
+    
+    try {
+      const response = await verifyOtp({ email, otp });
 
-    if (response.token) {
-      localStorage.setItem("token", response.token);
-      alert("Account Verified & Registered Successfully");
-      navigate("/");
-    } else {
-      alert(response.message);
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        toast.success("Account Verified & Registered Successfully");
+        
+        // Navigate after a short delay to ensure toast is visible
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      } else {
+        toast.error(response.message || "OTP verification failed");
+        setLoading(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "OTP verification failed");
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -73,8 +90,12 @@ const Register = () => {
           transition={{ duration: 0.5 }}
         >
           <div
-          className={`w-full max-w-xs sm:max-w-sm md:max-w-md p-6 sm:p-8 border rounded-xl 
-            ${darkMode ? "border-white shadow-md shadow-white" : "border-black shadow-md shadow-black"}
+            className={`w-full max-w-xs sm:max-w-sm md:max-w-md p-6 sm:p-8 border rounded-xl 
+            ${
+              darkMode
+                ? "border-white shadow-md shadow-white"
+                : "border-black shadow-md shadow-black"
+            }
           `}
           >
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-5 sm:mb-6 text-center">
@@ -83,61 +104,79 @@ const Register = () => {
 
             {!showOtpField ? (
               <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
-                <Input
-                  label="Name"
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="John Doe"
-                  className="w-full"
-                />
-                <Input
-                  label="Email"
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="johndoe@example.com"
-                  className="w-full"
-                />
-                <Input
-                  label="Password"
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="********"
-                  className="w-full"
-                />
+                <div className="flex flex-col space-y-1">
+                  <label htmlFor="name">Name</label>
+                  <Input
+                    id="name"
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="John Doe"
+                    className="w-full"
+                  />
+                </div>
+                
+                <div className="flex flex-col space-y-1">
+                  <label htmlFor="email">Email</label>
+                  <Input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="johndoe@example.com"
+                    className="w-full"
+                  />
+                </div>
+                
+                <div className="flex flex-col space-y-1">
+                  <label htmlFor="password">Password</label>
+                  <Input
+                    id="password"
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="********"
+                    className="w-full"
+                  />
+                </div>
+                
                 <Button
                   type="submit"
-                  text="Register"
-                  loading={loading}
+                  disabled={loading}
                   className={`w-full px-4 py-3 sm:py-2 
-            ${darkMode ? "bg-white text-black" : "bg-black text-white"} 
-            shadow-xs hover:bg-gray-400 hover:text-black`}
-                />
+                  ${darkMode ? "bg-white text-black" : "bg-black text-white"} 
+                  shadow-xs hover:bg-gray-400 hover:text-black`}
+                >
+                  {loading ? "Registering..." : "Register"}
+                </Button>
               </form>
             ) : (
               <div className="space-y-3 sm:space-y-4">
-                <Input
-                  label="Enter OTP"
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="123456"
-                  className="w-full"
-                />
+                <div className="flex flex-col space-y-1">
+                  <label htmlFor="otp">Enter OTP</label>
+                  <Input
+                    id="otp"
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="123456"
+                    className="w-full"
+                  />
+                </div>
+                
                 <Button
-                  type="submit"
-                  text="Verify OTP"
+                  type="button"
                   onClick={handleOtpSubmit}
-                  loading={loading}
+                  disabled={loading}
                   className={`w-full px-4 py-3 sm:py-2 
-            ${darkMode ? "bg-white text-black" : "bg-black text-white"} 
-            shadow-xs hover:bg-gray-400 hover:text-black`}
-                />
+                  ${darkMode ? "bg-white text-black" : "bg-black text-white"} 
+                  shadow-xs hover:bg-gray-400 hover:text-black`}
+                >
+                  {loading ? "Verifying..." : "Verify OTP"}
+                </Button>
               </div>
             )}
 

@@ -1,11 +1,28 @@
 import { Plus } from "lucide-react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 import Dropdown from "../ui/select";
 import { Button } from "../ui/button";
 
 const CardGenerator = ({ onGenerate, loading, selectedType, setSelectedType }) => {
   const darkMode = useSelector((state) => state.theme.darkMode);
+
+  const handleGenerate = async () => {
+    try {
+      // Show a loading toast that can be dismissed when onGenerate completes
+      toast.loading(`Generating ${selectedType.toUpperCase()} card...`, { id: 'cardGeneration' });
+      
+      // Call the original onGenerate function
+      await onGenerate();
+      
+      // Once generation is successful, update the toast
+      toast.success(`${selectedType.toUpperCase()} card generated successfully!`, { id: 'cardGeneration' });
+    } catch (error) {
+      // If there's an error, show an error toast
+      toast.error(`Failed to generate ${selectedType.toUpperCase()} card. Please try again.`, { id: 'cardGeneration' });
+    }
+  };
 
   return (
     <div
@@ -24,7 +41,7 @@ const CardGenerator = ({ onGenerate, loading, selectedType, setSelectedType }) =
         <Button
           icon={<Plus size={20} />}
           text="Generate"
-          onClick={onGenerate}
+          onClick={handleGenerate}
           disabled={loading}
           loading={loading}
           className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition w-full sm:w-auto 

@@ -5,6 +5,7 @@ import Dashboard from "./pages/dashboard";
 import ProtectedRoute from "./components/protectedRoute";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
@@ -19,6 +20,19 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
         </Routes>
+        
+        {/* Add Toaster component for notifications */}
+        <Toaster 
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              borderRadius: '8px',
+              background: '#333',
+              color: '#fff',
+            },
+          }}
+        />
       </Router>
     </Provider>
   );

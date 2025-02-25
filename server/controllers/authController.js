@@ -7,7 +7,6 @@ const OtpTemp = require("../models/otpTempModel");
 
 
 exports.register = async (req, res) => {
-  console.log("Request Body:", req.body);
   const { name, email, password } = req.body;
 
   try {
@@ -15,17 +14,15 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check if user already exists in the database
     const userExists = await User.findOne({ email });
     if (userExists)
       return res.status(400).json({ message: "User already exists" });
 
-    // Generate OTP
     const otp = otpGenerator();
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Store OTP in a temporary collection (or use Redis for better performance)
+    // Temporary Store for Otp
     await OtpTemp.create({
       name,
       email,
@@ -81,10 +78,8 @@ exports.sendOtp = async (req, res) => {
     await user.save();
 
     await sendOTP(email, otp);
-    console.log("in the send body");
     res.json({ message: "OTP sent successfully" });
   } catch (error) {
-    console.log("in the catch body");
     res.status(500).json({ message: "Error sending OTP", error });
   }
 };
