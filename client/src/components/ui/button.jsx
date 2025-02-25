@@ -36,7 +36,7 @@ export function Button({
       type={type}
       onClick={onClick}
       disabled={loading || disabled}
-      className={` ${
+      className={`rounded-lg ${
         loading || disabled ? "bg-gray-400 cursor-not-allowed" : ""
       } ${className}`}
     >

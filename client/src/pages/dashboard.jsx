@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CardGenerator from "../components/layout/cardGenerator";
 import { Alert } from "../components/ui/alert";
 import CardList from "../components/layout/cardList";
 import { Button } from "../components/ui/button";
+import Navbar from "../components/layout/navbar";
 
 const Dashboard = () => {
+  const darkMode = useSelector((state) => state.theme.darkMode);
   const navigate = useNavigate();
   const [cards, setCards] = useState([]);
   const [error, setError] = useState("");
@@ -59,18 +62,22 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white p-12 text-black">
-      <div className="w-full max-w-5xl mx-auto">
+    <div className={`h-full ${darkMode ? "bg-black text-white" : "bg-white text-black"} transition-all`}>
+      <Navbar />
+      <div className="w-full mx-auto py-6 px-44">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Credit Card Dashboard</h1>
           <Button
             text="Logout"
             onClick={handleLogout}
-            className="px-4 py-2 bg-black text-white shadow-lg hover:bg-gray-400 disabled:opacity-50 hover:text-black"
-          >
-          </Button>
+            className={`px-4 py-2 rounded-lg ${
+              darkMode ? "bg-white text-black" : "bg-black text-white"
+            } shadow-lg hover:bg-gray-400 hover:text-black transition`}
+          />
         </div>
+        
         {error && <Alert variant="error">{error}</Alert>}
+
         <CardGenerator
           onGenerate={generateCard}
           loading={loading}
