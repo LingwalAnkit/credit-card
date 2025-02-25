@@ -9,16 +9,17 @@ const CardGenerator = ({ onGenerate, loading, selectedType, setSelectedType }) =
 
   return (
     <div
-      className={`p-4 border mb-12 shadow-md rounded-lg transition-all ${
-        darkMode ? "bg-black text-white border-white shadow-white" : "bg-white text-black border-black shadow-black"
-      }`}
+      className={`p-4 border mb-8 md:mb-12 shadow-md rounded-lg transition-all 
+        ${darkMode ? "bg-black text-white border-white shadow-white" : "bg-white text-black border-black shadow-black"}
+      `}
     >
-      <h2 className="text-lg font-semibold mb-2">Generate New Card</h2>
-      <div className="flex gap-2">
+      <h2 className="text-lg sm:text-xl font-semibold mb-3">Generate New Card</h2>
+      <div className="flex flex-col sm:flex-row gap-3">
         <Dropdown
           options={["visa", "mastercard", "amex"]}
           selected={selectedType}
           setSelected={setSelectedType}
+          className="w-full sm:w-auto"
         />
         <Button
           icon={<Plus size={20} />}
@@ -26,9 +27,9 @@ const CardGenerator = ({ onGenerate, loading, selectedType, setSelectedType }) =
           onClick={onGenerate}
           disabled={loading}
           loading={loading}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
-            darkMode ? "bg-white text-black" : "bg-black text-white"
-          } shadow-lg hover:bg-gray-400 hover:text-black disabled:opacity-50`}
+          className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition w-full sm:w-auto 
+            ${darkMode ? "bg-white text-black" : "bg-black text-white"} 
+            shadow-lg hover:bg-gray-400 hover:text-black disabled:opacity-50`}
         />
       </div>
     </div>
@@ -36,10 +37,10 @@ const CardGenerator = ({ onGenerate, loading, selectedType, setSelectedType }) =
 };
 
 CardGenerator.propTypes = {
-  onGenerate: PropTypes.func.isRequired, // Function required for card generation
-  loading: PropTypes.bool, // Boolean to indicate loading state
-  selectedType: PropTypes.string.isRequired, // Selected card type
-  setSelectedType: PropTypes.func.isRequired, // Function to update selectedType
+  onGenerate: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  selectedType: PropTypes.string.isRequired,
+  setSelectedType: PropTypes.func.isRequired,
 };
 
 export default CardGenerator;

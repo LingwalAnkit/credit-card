@@ -62,11 +62,11 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className={`h-full ${darkMode ? "bg-black text-white" : "bg-white text-black"} transition-all`}>
+    <div className={`min-h-screen ${darkMode ? "bg-black text-white" : "bg-white text-black"} transition-all`}>
       <Navbar />
-      <div className="w-full mx-auto py-6 px-44">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Credit Card Dashboard</h1>
+      <div className="w-full mx-auto py-4 md:py-6 px-4 sm:px-6 md:px-12 lg:px-24 xl:px-32">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold">Credit Card Dashboard</h1>
           <Button
             text="Logout"
             onClick={handleLogout}

@@ -9,7 +9,7 @@ const Dropdown = ({ options, selected, setSelected }) => {
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   return (
-    <div className="relative w-48">
+    <div className="relative w-full sm:w-48">
       {/* Selected Option (Trigger) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -36,7 +36,7 @@ const Dropdown = ({ options, selected, setSelected }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className={`absolute left-0 w-full mt-2 border rounded-lg transition-all ${
+            className={`absolute left-0 w-full mt-2 border rounded-lg z-10 transition-all ${
               darkMode ? "bg-black border-white shadow-white" : "bg-white border-black shadow-black"
             }`}
           >
