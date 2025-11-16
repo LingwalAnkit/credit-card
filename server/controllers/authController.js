@@ -1,10 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const otpGenerator = require("../utils/otpGenerator");
-const sendOTP = require("../config/mailer");
-const OtpTemp = require("../models/otpTempModel");
-
 
 exports.register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -18,22 +14,28 @@ exports.register = async (req, res) => {
     if (userExists)
       return res.status(400).json({ message: "User already exists" });
 
-    const otp = otpGenerator();
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Temporary Store for Otp
-    await OtpTemp.create({
+    // Create user directly without OTP verification
+    const newUser = new User({
       name,
       email,
       password: hashedPassword,
-      otp,
-      otpExpires: Date.now() + 5 * 60 * 1000,
     });
 
-    await sendOTP(email, otp);
+    await newUser.save();
 
-    res.status(200).json({ message: "OTP sent for verification", email });
+    // Generate JWT Token
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user: { id: newUser._id, name: newUser.name, email: newUser.email },
+    });
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -90,7 +92,9 @@ exports.verifyOtp = async (req, res) => {
   try {
     const tempUser = await OtpTemp.findOne({ email });
     if (!tempUser) {
-      return res.status(400).json({ message: "Invalid request, please register again" });
+      return res
+        .status(400)
+        .json({ message: "Invalid request, please register again" });
     }
 
     if (tempUser.otp !== otp) {
@@ -112,13 +116,13 @@ exports.verifyOtp = async (req, res) => {
     await OtpTemp.deleteOne({ email }); // Remove temp data after successful verification
 
     // Generate JWT Token
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     res.status(200).json({ message: "OTP verified successfully", token });
-
   } catch (error) {
     console.error("OTP Verification error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
